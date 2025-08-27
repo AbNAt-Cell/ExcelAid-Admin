@@ -40,7 +40,7 @@ export default function DoctorProfile() {
         <Card>
           <CardHeader>
             <CardTitle className="text-base sm:text-lg font-medium">
-              Doctor Information
+              Admin Information
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 sm:space-y-4">
@@ -117,7 +117,7 @@ export default function DoctorProfile() {
 
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
               <div className="space-y-3 sm:space-y-4">
-                <p className="font-medium text-sm sm:text-base">Doctor Signature</p>
+                <p className="font-medium text-sm sm:text-base">Admin Signature</p>
                 <div className="flex items-center justify-center border rounded-lg p-3 sm:p-4 h-20 sm:h-24 bg-gray-50">
                   {clientSignature ? (
                     <Image src={clientSignature} alt="Client Signature" height={100} width={100} className="h-full w-auto" />
