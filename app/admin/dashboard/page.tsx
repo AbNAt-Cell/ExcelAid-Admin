@@ -10,11 +10,6 @@ import LoggedByStaff from './Partials/LoggedInStaff';
 import UpcomingComplience from './Partials/UpcomingComplience';
 import ClientsBySite from './Partials/ClientsBySite';
 import DocumentsPendingReview from './Partials/DocumentsPendingReview';
-import ClientsByStatus from './Partials/ClientsByStatus';
-import ClientsByStatusTable from './Partials/ClientsByStatusTable';
-import ClientAuthorizations from './Partials/ClientAuthorizations';
-import Training from './Partials/Training';
-import StaffNotLoggedIn from './Partials/StaffNotLoggedIn';
 
 export default function AdminDashboard() {
   // const router = useRouter();

@@ -82,7 +82,7 @@ export default function ClientDiagnosis() {
   }
 
   return (
-    <div className="container max-w-[1350px] mx-auto p-6 space-y-6">
+    <div className="container max-w-[1350px] mx-auto space-y-6">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <CardTitle className="text-lg font-medium">Client</CardTitle>
@@ -94,12 +94,12 @@ export default function ClientDiagnosis() {
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search clients..."
-                  className="pl-8 w-[300px]"
+                  className="pl-8 w-[240px]"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <DatePickerWithRange />
+              {/* <DatePickerWithRange /> */}
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">

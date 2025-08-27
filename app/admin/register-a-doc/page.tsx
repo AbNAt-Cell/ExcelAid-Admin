@@ -486,7 +486,7 @@ export default function MarketerRegister() {
                       name="address.country"
                       render={({ field }) => (
                         <FormItem className="w-full">
-                          <FormLabel>Country</FormLabel>
+                          {/* <FormLabel>Country</FormLabel> */}
                           <FormControl>
                             <select {...field} className="w-full rounded-md border px-3 py-2">
                               <option value="">Select Country</option>
