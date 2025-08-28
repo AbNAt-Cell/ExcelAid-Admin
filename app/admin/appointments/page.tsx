@@ -1,19 +1,12 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
-import { Search } from "lucide-react"
-import { DatePickerWithRange } from '@/components/DatePickerWithRange'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+import { DatePickerWithRange } from "@/components/DatePickerWithRange";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 type ClientStatus = "Confirmed" | "Pending" | "Review";
 
@@ -22,64 +15,37 @@ interface Diagnosis {
   date: string;
   name: string;
   status: ClientStatus;
-  sex?: 'male' | 'female'
-  time?: string
-  address?: string
-  signature?: string
-  assessment?: string
-  doctorName?: string
-  marketerName?: string
+  sex?: "male" | "female";
+  time?: string;
+  address?: string;
+  signature?: string;
+  assessment?: string;
+  doctorName?: string;
+  marketerName?: string;
 }
 
 export default function ClientDiagnosis() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [startDate, setStartDate] = useState('');
+  const [startDate, setStartDate] = useState("");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [endDate, setEndDate] = useState('');
+  const [endDate, setEndDate] = useState("");
 
-  const diagnoses: Diagnosis[] = [
-    {
-      id: 'D001',
-      date: '2024-01-15',
-      name: 'John Doe',
-      sex: 'male',
-      time: '10:00 AM',
-      address: '123 Main St, City, Country',
-      assessment: 'Initial consultation and assessment completed.',
-      signature: '', 
-      status: "Confirmed",
-      doctorName: "Dr. Smith",
-      marketerName: "Jane Marketing",
-    },
-    {
-      id: 'D002',
-      date: '2023-12-01',
-      name: 'Mary Johnson',
-      sex: 'female',
-      time: '2:00 PM',
-      address: '456 Elm St, City, Country',
-      status: "Pending",
-      doctorName: "Dr. Green",
-      marketerName: "Mark Johnson",
-    },
-  ];
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
 
-  const filteredDiagnoses = diagnoses.filter(diagnosis => {
-    const matchesSearch = diagnosis.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      diagnosis.status.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDateRange = (!startDate || diagnosis.date >= startDate) &&
-      (!endDate || diagnosis.date <= endDate);
+  const filteredDiagnoses = diagnoses.filter((diagnosis) => {
+    const matchesSearch = diagnosis.name.toLowerCase().includes(searchTerm.toLowerCase()) || diagnosis.status.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesDateRange = (!startDate || diagnosis.date >= startDate) && (!endDate || diagnosis.date <= endDate);
     return matchesSearch && matchesDateRange;
   });
 
-  const [open, setOpen] = useState(false)
-  const [selected, setSelected] = useState<Diagnosis | null>(null)
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState<Diagnosis | null>(null);
 
   const handleRowClick = (d: Diagnosis) => {
-    setSelected(d)
-    setOpen(true)
-  }
+    setSelected(d);
+    setOpen(true);
+  };
 
   return (
     <div className="container max-w-[1350px] mx-auto space-y-6">
@@ -92,12 +58,7 @@ export default function ClientDiagnosis() {
             <div className="flex flex-col md:flex-row gap-4">
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search clients..."
-                  className="pl-8 w-[240px]"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
+                <Input placeholder="Search clients..." className="pl-8 w-[240px]" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
               </div>
               {/* <DatePickerWithRange /> */}
             </div>
@@ -130,9 +91,7 @@ export default function ClientDiagnosis() {
                       <TableCell>{new Date(diagnosis.date).toLocaleDateString()}</TableCell>
                       <TableCell>{diagnosis.name}</TableCell>
                       <TableCell>
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${diagnosis.status === "Confirmed" ? "bg-green-100 text-green-800" : diagnosis.status === "Pending" ? "bg-yellow-100 text-yellow-800" : "bg-blue-100 text-blue-800"}`}>
-                          {diagnosis.status}
-                        </span>
+                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${diagnosis.status === "Confirmed" ? "bg-green-100 text-green-800" : diagnosis.status === "Pending" ? "bg-yellow-100 text-yellow-800" : "bg-blue-100 text-blue-800"}`}>{diagnosis.status}</span>
                       </TableCell>
                     </TableRow>
                   ))
@@ -153,19 +112,37 @@ export default function ClientDiagnosis() {
               </DialogHeader>
 
               <div className="space-y-3">
-                <p><b>Client:</b> {selected.name}</p>
-                <p><b>Sex:</b> {selected.sex ?? '—'}</p>
-                <p><b>Date:</b> {selected.date}</p>
-                <p><b>Time:</b> {selected.time ?? '—'}</p>
-                <p><b>Address:</b> {selected.address ?? '—'}</p>
-                <p><b>Status:</b> {selected.status}</p>
+                <p>
+                  <b>Client:</b> {selected.name}
+                </p>
+                <p>
+                  <b>Sex:</b> {selected.sex ?? "—"}
+                </p>
+                <p>
+                  <b>Date:</b> {selected.date}
+                </p>
+                <p>
+                  <b>Time:</b> {selected.time ?? "—"}
+                </p>
+                <p>
+                  <b>Address:</b> {selected.address ?? "—"}
+                </p>
+                <p>
+                  <b>Status:</b> {selected.status}
+                </p>
                 {/* Only show doctor name if status is not Pending */}
                 {selected.status !== "Pending" && (
-                  <p><b>Doctor:</b> {selected.doctorName ?? '—'}</p>
+                  <p>
+                    <b>Doctor:</b> {selected.doctorName ?? "—"}
+                  </p>
                 )}
-                
-                <p><b>Marketer:</b> {selected.marketerName ?? '—'}</p>
-                <p><b>Assessment Summary:</b> {selected.assessment ?? '—'}</p>
+
+                <p>
+                  <b>Marketer:</b> {selected.marketerName ?? "—"}
+                </p>
+                <p>
+                  <b>Assessment Summary:</b> {selected.assessment ?? "—"}
+                </p>
 
                 {selected.signature ? (
                   <div>
@@ -174,7 +151,9 @@ export default function ClientDiagnosis() {
                     <img src={selected.signature} alt="Client Signature" className="mt-2 border rounded-md w-40" />
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground"><b>Client Signature:</b> None</p>
+                  <p className="text-sm text-muted-foreground">
+                    <b>Client Signature:</b> None
+                  </p>
                 )}
               </div>
             </>
@@ -182,5 +161,5 @@ export default function ClientDiagnosis() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }
