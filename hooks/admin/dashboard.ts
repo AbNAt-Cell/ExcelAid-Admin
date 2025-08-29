@@ -6,7 +6,7 @@ export const docStats = async () => {
   if (!token) {
     throw new Error("Token is required");
   }
-  const response = await axiosInstance.post("/api/stats/doctors", {
+  const response = await axiosInstance.get("/api/stats/doctors", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
