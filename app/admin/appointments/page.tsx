@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { DatePickerWithRange } from "@/components/DatePickerWithRange";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { seeAllAppointments } from "@/hooks/admin/appointments";
 
 type ClientStatus = "Confirmed" | "Pending" | "Review";
 
@@ -31,11 +32,11 @@ export default function ClientDiagnosis() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [endDate, setEndDate] = useState("");
 
-  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
+  const [appointments, setAppointments] = useState<Diagnosis[]>([]);
 
-  const filteredDiagnoses = diagnoses.filter((diagnosis) => {
-    const matchesSearch = diagnosis.name.toLowerCase().includes(searchTerm.toLowerCase()) || diagnosis.status.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDateRange = (!startDate || diagnosis.date >= startDate) && (!endDate || diagnosis.date <= endDate);
+  const filteredAppointments = appointments.filter((appointment) => {
+    const matchesSearch = appointment?.name?.toLowerCase().includes(searchTerm.toLowerCase()) || appointment?.status?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesDateRange = (!startDate || appointment?.date >= startDate) && (!endDate || appointment?.date <= endDate);
     return matchesSearch && matchesDateRange;
   });
 
@@ -46,6 +47,16 @@ export default function ClientDiagnosis() {
     setSelected(d);
     setOpen(true);
   };
+
+  useEffect(() => {
+    const getAppointments = async () => {
+      const response = await seeAllAppointments();
+      if (response) {
+        setAppointments(response);
+      }
+    };
+    getAppointments();
+  }, []);
 
   return (
     <div className="container max-w-[1350px] mx-auto space-y-6">
@@ -64,7 +75,7 @@ export default function ClientDiagnosis() {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">
-                Showing {filteredDiagnoses.length} of {diagnoses.length} clients
+                Showing {filteredAppointments.length} of {appointments.length} clients
               </span>
             </div>
           </div>
@@ -79,19 +90,19 @@ export default function ClientDiagnosis() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredDiagnoses.length === 0 ? (
+                {filteredAppointments.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={5} className="text-center py-6">
                       No Client found
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredDiagnoses.map((diagnosis) => (
-                    <TableRow key={diagnosis.id} className="cursor-pointer hover:bg-accent" onClick={() => handleRowClick(diagnosis)}>
-                      <TableCell>{new Date(diagnosis.date).toLocaleDateString()}</TableCell>
-                      <TableCell>{diagnosis.name}</TableCell>
+                  filteredAppointments.map((appointment) => (
+                    <TableRow key={appointment?.id} className="cursor-pointer hover:bg-accent" onClick={() => handleRowClick(appointment)}>
+                      <TableCell>{new Date(appointment?.form?.appointmentDate).toLocaleDateString()}</TableCell>
+                      <TableCell>{appointment?.name}</TableCell>
                       <TableCell>
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${diagnosis.status === "Confirmed" ? "bg-green-100 text-green-800" : diagnosis.status === "Pending" ? "bg-yellow-100 text-yellow-800" : "bg-blue-100 text-blue-800"}`}>{diagnosis.status}</span>
+                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${appointment?.status === "Confirmed" ? "bg-green-100 text-green-800" : appointment?.status === "Pending" ? "bg-yellow-100 text-yellow-800" : "bg-blue-100 text-blue-800"}`}>{appointment?.status}</span>
                       </TableCell>
                     </TableRow>
                   ))

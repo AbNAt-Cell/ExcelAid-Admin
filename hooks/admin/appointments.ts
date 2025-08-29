@@ -26,7 +26,5 @@ export const seeAllAppointments = async () => {
     },
   });
 
-  console.log("response", response);
-
   return response?.data;
 };

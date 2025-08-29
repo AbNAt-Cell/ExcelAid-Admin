@@ -17,16 +17,17 @@ import { getClients } from "@/hooks/admin/client";
 type ClientStatus = "Submitted" | "Pending" | "Review";
 
 interface Diagnosis {
+  clientName: string;
+  marketer: any;
+  doctor: any;
   id: string;
-  date: string;
+  appointmentDate: any;
   name: string;
   status: ClientStatus;
   sex?: "male" | "female";
-  time?: string;
+  appointmentTime?: string;
   address?: string;
   signature?: string;
-  doctorName?: string;
-  marketerName?: string;
   assessment?: string;
 }
 
@@ -40,8 +41,8 @@ export default function ClientDiagnosis() {
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
 
   const filteredDiagnoses = diagnoses.filter((diagnosis) => {
-    const matchesSearch = diagnosis.name.toLowerCase().includes(searchTerm.toLowerCase()) || diagnosis.status.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDateRange = (!startDate || diagnosis.date >= startDate) && (!endDate || diagnosis.date <= endDate);
+    const matchesSearch = diagnosis?.name?.toLowerCase().includes(searchTerm.toLowerCase()) || diagnosis?.status?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesDateRange = (!startDate || diagnosis?.date >= startDate) && (!endDate || diagnosis?.date <= endDate);
     return matchesSearch && matchesDateRange;
   });
 
@@ -124,12 +125,12 @@ export default function ClientDiagnosis() {
                   </TableRow>
                 ) : (
                   filteredDiagnoses.map((diagnosis) => (
-                    <TableRow key={diagnosis.id} className="cursor-pointer hover:bg-accent" onClick={() => handleRowClick(diagnosis)}>
-                      <TableCell>{new Date(diagnosis.date).toLocaleDateString()}</TableCell>
-                      <TableCell>{diagnosis.name}</TableCell>
+                    <TableRow key={diagnosis?.id} className="cursor-pointer hover:bg-accent" onClick={() => handleRowClick(diagnosis)}>
+                      <TableCell>{new Date(diagnosis?.appointmentDate).toLocaleDateString()}</TableCell>
+                      <TableCell>{diagnosis?.clientName}</TableCell>
                       {/* <TableCell>
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${diagnosis.status === "Submitted" ? "bg-green-100 text-green-800" : diagnosis.status === "Pending" ? "bg-yellow-100 text-yellow-800" : "bg-blue-100 text-blue-800"}`}>
-                          {diagnosis.status}
+                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${diagnosis?.status === "Submitted" ? "bg-green-100 text-green-800" : diagnosis?.status === "Pending" ? "bg-yellow-100 text-yellow-800" : "bg-blue-100 text-blue-800"}`}>
+                          {diagnosis?.status}
                         </span>
                       </TableCell> */}
                     </TableRow>
@@ -157,10 +158,10 @@ export default function ClientDiagnosis() {
                   <b>Sex:</b> {selected.sex ?? "—"}
                 </p>
                 <p>
-                  <b>Date:</b> {selected.date}
+                  <b>Date:</b> {selected.appointmentDate ? new Date(selected.appointmentDate).toLocaleDateString() : "—"}
                 </p>
                 <p>
-                  <b>Time:</b> {selected.time ?? "—"}
+                  <b>Time:</b> {selected.appointmentTime ?? "—"}
                 </p>
                 <p>
                   <b>Address:</b> {selected.address ?? "—"}
@@ -174,10 +175,10 @@ export default function ClientDiagnosis() {
                       <b>Status:</b> {selected.status}
                     </p>
                     <p>
-                      <b>Doctor Name:</b> {selected.doctorName ?? "—"}
+                      <b>Doctor Name:</b> {selected.doctor?.email ?? "—"}
                     </p>
                     <p>
-                      <b>Marketer Name:</b> {selected.marketerName ?? "—"}
+                      <b>Marketer Name:</b> {selected.marketer?.name ?? "—"}
                     </p>
                   </>
                 )}
