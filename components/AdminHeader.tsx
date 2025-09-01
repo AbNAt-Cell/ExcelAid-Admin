@@ -49,13 +49,13 @@ const AdminHeader = () => {
         <div className='mx-auto max-w-[1350px]'>
           <div className="flex items-center justify-between h-[80px] px-6 py-3">
             <div className="flex items-center space-x-4">
-              {/* <Image
-                src="/images/logo.png"
-                alt="Next.js logo"
-                width={150}
+              <Image
+                src="/images/logo.svg"
+                alt="excel connect logo"
+                width={250}
                 height={32}
                 priority
-              /> */}
+              />
             </div>
             <div className="flex items-center gap-2">             
               <DropdownMenu>

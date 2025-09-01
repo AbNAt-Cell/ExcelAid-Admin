@@ -11,8 +11,11 @@ const raleway = Raleway({
 })
 
 export const metadata: Metadata = {
-  title: 'Theralink',
-  description: 'Theralink - Your Therapy Management Solution',
+  title: 'Excel Connect',
+  description: 'Excel Connect - Therapy Brought to you',
+  icons: {
+    icon: "/images/favicon.svg", // Path from public/
+  },
 }
 
 export default function RootLayout({
