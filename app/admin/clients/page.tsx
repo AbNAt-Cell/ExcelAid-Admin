@@ -1,128 +1,89 @@
-'use client'
+"use client";
 
-import { useRef, useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
-import { Search } from "lucide-react"
-import { DatePickerWithRange } from '@/components/DatePickerWithRange'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Button } from "@/components/ui/button"
-import SignatureCanvas from 'react-signature-canvas'
+import { useEffect, useRef, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+import { DatePickerWithRange } from "@/components/DatePickerWithRange";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import SignatureCanvas from "react-signature-canvas";
+import { getClients } from "@/hooks/admin/client";
 
 type ClientStatus = "Submitted" | "Pending" | "Review";
 
 interface Diagnosis {
+  clientName: string;
+  marketer: any;
+  doctor: any;
   id: string;
-  date: string;
+  appointmentDate: any;
   name: string;
   status: ClientStatus;
-  sex?: 'male' | 'female'
-  time?: string
-  address?: string
-  signature?: string
-  doctorName?: string
-  marketerName?: string
-  assessment?: string
+  sex?: "male" | "female";
+  appointmentTime?: string;
+  address?: string;
+  signature?: string;
+  assessment?: string;
 }
 
 export default function ClientDiagnosis() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [startDate, setStartDate] = useState('');
+  const [startDate, setStartDate] = useState("");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [endDate, setEndDate] = useState('');
+  const [endDate, setEndDate] = useState("");
 
-  const diagnoses: Diagnosis[] = [
-    {
-      id: 'D001',
-      date: '2024-01-15',
-      name: 'John Doe',
-      sex: 'male',
-      time: '10:00 AM',
-      address: '123 Main St, City, Country',
-      assessment: 'Initial consultation and assessment completed.',
-      doctorName: 'Dr. Smith Joe',
-      marketerName: 'Mr Marketer marketing',
-      // signature: 'data:image/png;base64,...',
-      status: "Submitted",
-    },
-    {
-      id: 'D002',
-      date: '2023-12-01',
-      name: 'Mary Johnson',
-      sex: 'female',
-      time: '2:00 PM',
-      address: '456 Elm St, City, Country',
-      assessment: 'Follow-up appointment for treatment review.',
-      doctorName: 'Dr. Jane Doe',
-      marketerName: 'Ms Marketer marketing',
-      // signature: 'data:image/png;base64,...',
-      status: "Submitted",
-    },
-    {
-      id: 'D003',
-      date: '2023-10-15',
-      name: 'Alex Lee',
-      sex: 'male',
-      time: '11:30 AM',
-      address: '789 Oak St, City, Country',
-      assessment: 'Patient requires further evaluation.',
-      doctorName: 'Dr. Emily White',
-      marketerName: 'Mr Marketer marketing',
-      // signature: 'data:image/png;base64,...',
-      status: "Submitted",
-    },
-  ];
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
 
-  const filteredDiagnoses = diagnoses.filter(diagnosis => {
-    const matchesSearch = diagnosis.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      diagnosis.status.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDateRange = (!startDate || diagnosis.date >= startDate) &&
-      (!endDate || diagnosis.date <= endDate);
+  const filteredDiagnoses = diagnoses.filter((diagnosis) => {
+    const matchesSearch = diagnosis?.name?.toLowerCase().includes(searchTerm.toLowerCase()) || diagnosis?.status?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesDateRange = (!startDate || diagnosis?.date >= startDate) && (!endDate || diagnosis?.date <= endDate);
     return matchesSearch && matchesDateRange;
   });
 
-  const [open, setOpen] = useState(false)
-  const [selected, setSelected] = useState<Diagnosis | null>(null)
-  const [assessment, setAssessment] = useState('')
-  const [statusSel, setStatusSel] = useState<ClientStatus>('Pending')
-  const sigRef = useRef<SignatureCanvas | null>(null)
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState<Diagnosis | null>(null);
+  const [assessment, setAssessment] = useState("");
+  const [statusSel, setStatusSel] = useState<ClientStatus>("Pending");
+  const sigRef = useRef<SignatureCanvas | null>(null);
 
   const handleRowClick = (d: Diagnosis) => {
-    setSelected(d)
-    setAssessment('')
-    setStatusSel(d.status)
-    setOpen(true)
-    setTimeout(() => sigRef.current?.clear(), 0)
-  }
+    setSelected(d);
+    setAssessment("");
+    setStatusSel(d.status);
+    setOpen(true);
+    setTimeout(() => sigRef.current?.clear(), 0);
+  };
 
   const handleConfirm = () => {
-    if (!selected) return
-    const doctorSignature = sigRef.current && !sigRef.current.isEmpty()
-      ? sigRef.current.getCanvas().toDataURL('image/png')
-      : null
+    if (!selected) return;
+    const doctorSignature = sigRef.current && !sigRef.current.isEmpty() ? sigRef.current.getCanvas().toDataURL("image/png") : null;
 
     console.log({
       id: selected.id,
       assessment,
       status: statusSel,
       doctorSignature,
-    })
-    setOpen(false)
-  }
+    });
+    setOpen(false);
+  };
 
-  const canEdit = selected && (selected.status === 'Pending' || selected.status === 'Review')
+  const canEdit = selected && (selected.status === "Pending" || selected.status === "Review");
+
+  useEffect(() => {
+    const getDiagnoses = async () => {
+      const response = await getClients();
+      if (response) {
+        setDiagnoses(response);
+      }
+    };
+    getDiagnoses();
+  }, []);
 
   return (
     <div className="container max-w-[1350px] mx-auto space-y-6">
@@ -135,12 +96,7 @@ export default function ClientDiagnosis() {
             <div className="flex flex-col md:flex-row gap-4">
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search clients..."
-                  className="pl-8 w-[240px]"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
+                <Input placeholder="Search clients..." className="pl-8 w-[240px]" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
               </div>
               {/* <DatePickerWithRange /> */}
             </div>
@@ -169,12 +125,12 @@ export default function ClientDiagnosis() {
                   </TableRow>
                 ) : (
                   filteredDiagnoses.map((diagnosis) => (
-                    <TableRow key={diagnosis.id} className="cursor-pointer hover:bg-accent" onClick={() => handleRowClick(diagnosis)}>
-                      <TableCell>{new Date(diagnosis.date).toLocaleDateString()}</TableCell>
-                      <TableCell>{diagnosis.name}</TableCell>
+                    <TableRow key={diagnosis?.id} className="cursor-pointer hover:bg-accent" onClick={() => handleRowClick(diagnosis)}>
+                      <TableCell>{new Date(diagnosis?.appointmentDate).toLocaleDateString()}</TableCell>
+                      <TableCell>{diagnosis?.clientName}</TableCell>
                       {/* <TableCell>
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${diagnosis.status === "Submitted" ? "bg-green-100 text-green-800" : diagnosis.status === "Pending" ? "bg-yellow-100 text-yellow-800" : "bg-blue-100 text-blue-800"}`}>
-                          {diagnosis.status}
+                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${diagnosis?.status === "Submitted" ? "bg-green-100 text-green-800" : diagnosis?.status === "Pending" ? "bg-yellow-100 text-yellow-800" : "bg-blue-100 text-blue-800"}`}>
+                          {diagnosis?.status}
                         </span>
                       </TableCell> */}
                     </TableRow>
@@ -195,17 +151,35 @@ export default function ClientDiagnosis() {
               </DialogHeader>
 
               <div className="space-y-3">
-                <p><b>Client:</b> {selected.name}</p>
-                <p><b>Sex:</b> {selected.sex ?? '—'}</p>
-                <p><b>Date:</b> {selected.date}</p>
-                <p><b>Time:</b> {selected.time ?? '—'}</p>
-                <p><b>Address:</b> {selected.address ?? '—'}</p>
-                {selected.status === 'Submitted' && (
+                <p>
+                  <b>Client:</b> {selected.name}
+                </p>
+                <p>
+                  <b>Sex:</b> {selected.sex ?? "—"}
+                </p>
+                <p>
+                  <b>Date:</b> {selected.appointmentDate ? new Date(selected.appointmentDate).toLocaleDateString() : "—"}
+                </p>
+                <p>
+                  <b>Time:</b> {selected.appointmentTime ?? "—"}
+                </p>
+                <p>
+                  <b>Address:</b> {selected.address ?? "—"}
+                </p>
+                {selected.status === "Submitted" && (
                   <>
-                    <p><b>Assessment Summary:</b> {selected.assessment ?? '—'}</p>
-                    <p><b>Status:</b> {selected.status}</p>
-                    <p><b>Doctor Name:</b> {selected.doctorName ?? '—'}</p>
-                    <p><b>Marketer Name:</b> {selected.marketerName ?? '—'}</p>
+                    <p>
+                      <b>Assessment Summary:</b> {selected.assessment ?? "—"}
+                    </p>
+                    <p>
+                      <b>Status:</b> {selected.status}
+                    </p>
+                    <p>
+                      <b>Doctor Name:</b> {selected.doctor?.email ?? "—"}
+                    </p>
+                    <p>
+                      <b>Marketer Name:</b> {selected.marketer?.name ?? "—"}
+                    </p>
                   </>
                 )}
                 {selected.signature ? (
@@ -214,7 +188,9 @@ export default function ClientDiagnosis() {
                     <img src={selected.signature} alt="Client Signature" className="mt-2 border rounded-md w-40" />
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground"><b>Client Signature:</b> None</p>
+                  <p className="text-sm text-muted-foreground">
+                    <b>Client Signature:</b> None
+                  </p>
                 )}
 
                 {canEdit && (
@@ -222,12 +198,7 @@ export default function ClientDiagnosis() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                       <div className="md:col-span-2">
                         <Label className="mb-1 block">Assessment Summary</Label>
-                        <Textarea
-                          value={assessment}
-                          onChange={(e) => setAssessment(e.target.value)}
-                          placeholder="Write your assessment..."
-                          className="min-h-20"
-                        />
+                        <Textarea value={assessment} onChange={(e) => setAssessment(e.target.value)} placeholder="Write your assessment..." className="min-h-20" />
                       </div>
 
                       <div>
@@ -247,12 +218,7 @@ export default function ClientDiagnosis() {
                       <div className="md:col-span-2">
                         <Label className="mb-1 block">Doctor Signature</Label>
                         <div className="border rounded-md p-2 bg-white">
-                          <SignatureCanvas
-                            ref={sigRef}
-                            penColor="black"
-                            canvasProps={{ width: 500, height: 160, className: 'border w-full h-[100px]' }}
-                            backgroundColor="white"
-                          />
+                          <SignatureCanvas ref={sigRef} penColor="black" canvasProps={{ width: 500, height: 160, className: "border w-full h-[100px]" }} backgroundColor="white" />
                         </div>
                         <div className="flex justify-between mt-2">
                           <Button type="button" variant="outline" size="sm" onClick={() => sigRef.current?.clear()}>
@@ -263,7 +229,9 @@ export default function ClientDiagnosis() {
                     </div>
 
                     <div className="pt-2">
-                      <Button onClick={handleConfirm} className="w-full">Confirm</Button>
+                      <Button onClick={handleConfirm} className="w-full">
+                        Confirm
+                      </Button>
                     </div>
                   </>
                 )}
@@ -273,5 +241,5 @@ export default function ClientDiagnosis() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }
