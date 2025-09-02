@@ -60,7 +60,7 @@ const AdminHeader = () => {
             <div className="flex items-center gap-2">             
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button className='text-primary hover:text-primary' asChild variant="ghost" size="icon">
+                  <Button className='text-black hover:text-secondary' asChild variant="ghost" size="icon">
                     <Bell className="h-6 w-6 cursor-pointer" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -75,7 +75,7 @@ const AdminHeader = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button asChild variant="ghost" size="icon">
-                    <UserCircle className="h-6 w-6 cursor-pointer" />
+                    <UserCircle className="h-6 w-6 cursor-pointer text-black hover:text-secondary" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56">
@@ -97,7 +97,7 @@ const AdminHeader = () => {
                   </div>
                   <DropdownMenuSeparator />
                   <Link href="/admin/profile">                    
-                    <DropdownMenuItem className='cursor-pointer text-blue-600 focus:text-blue-600'>
+                    <DropdownMenuItem className='cursor-pointer text-black focus:text-secondary'>
                       <UserCircle className="mr-2 h-4 w-4" />Profile
                     </DropdownMenuItem>
                   </Link>
@@ -113,22 +113,42 @@ const AdminHeader = () => {
         <div className='flex items-center justify-between px-6 py-3'>
           <div className="flex flex-wrap flex-row items-center gap-4">
             <Link href="/admin/dashboard">
-              <Button className={`${isActivePath('dashboard')} font-semibold rounded-sm text-[14px] h-7 w-22`} variant="pill" size="sm">
+              <Button className={`
+                font-semibold rounded-sm text-[14px] h-7 w-22
+                ${isActivePath('dashboard') 
+                  ? 'bg-secondary text-black hover:bg-secondary/90' 
+                  : 'bg-secondary/10 text-black hover:bg-secondary hover:text-white'}
+                `} variant="pill" size="sm">
                 Dashboard
               </Button>
             </Link>
             <Link href="/admin/appointments">
-              <Button className={`${isActivePath('appointments')} font-semibold rounded-sm text-[14px] h-7 w-22`} variant="pill" size="sm">
+              <Button className={`
+                font-semibold rounded-sm text-[14px] h-7 w-22
+                ${isActivePath('appointments') 
+                  ? 'bg-secondary text-white hover:bg-secondary/90' 
+                  : 'bg-secondary/10 text-black hover:bg-secondary hover:text-white'}
+                `} variant="pill" size="sm">
                 Appointments
               </Button>
             </Link>
             <Link href="/admin/clients">
-              <Button className={`${isActivePath('clients')} font-semibold rounded-sm text-[14px] h-7 w-22`} variant="pill" size="sm">
+              <Button className={`
+                font-semibold rounded-sm text-[14px] h-7 w-22
+                ${isActivePath('clients') 
+                  ? 'bg-secondary text-white hover:bg-secondary/90' 
+                  : 'bg-secondary/10 text-black hover:bg-secondary hover:text-white'}
+              `} variant="pill" size="sm">
                 Clients
               </Button>
             </Link>
             <Link href="/admin/register-a-doc">
-              <Button className={`${isActivePath('register-a-doc')} font-semibold rounded-sm text-[14px] h-7 w-22`} variant="pill" size="sm">
+              <Button className={`
+                font-semibold rounded-sm text-[14px] h-7 w-22
+                ${isActivePath('register-a-doc') 
+                  ? 'bg-secondary text-white hover:bg-secondary/90' 
+                  : 'bg-secondary/10 text-black hover:bg-secondary hover:text-white'}
+              `} variant="pill" size="sm">
                 Register A Doctor
               </Button>
             </Link>
