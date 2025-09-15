@@ -130,6 +130,15 @@ export default function AdminLogin() {
                   </span>
                 )}
               </Button>
+
+              <div className="flex justify-between">
+                {/* <Link href="/forgot-password" className="text-xs text-primary">
+                    Forgot password?
+                  </Link> */}
+                <Link href="/register" className="text-xs text-primary ms-auto">
+                  Register
+                </Link>
+              </div>
             </form>
           </Form>
         </CardContent>
