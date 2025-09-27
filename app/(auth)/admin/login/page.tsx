@@ -135,9 +135,9 @@ export default function AdminLogin() {
                 {/* <Link href="/forgot-password" className="text-xs text-primary">
                     Forgot password?
                   </Link> */}
-                <Link href="/register" className="text-xs text-primary ms-auto">
+                {/* <Link href="/register" className="text-xs text-primary ms-auto">
                   Register
-                </Link>
+                </Link> */}
               </div>
             </form>
           </Form>
