@@ -6,7 +6,7 @@ export const getClients = async () => {
   //   const response = await axiosInstance.get('/api/patients');
   let response;
   try {
-    response = await axiosInstance.get("/api/forms", {
+    response = await axiosInstance.get("/api/appointments", {
       headers: {
         Authorization: `Bearer ${token}`,
       },

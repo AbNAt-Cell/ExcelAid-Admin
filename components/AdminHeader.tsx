@@ -106,7 +106,7 @@ const AdminHeader = () => {
                 Dashboard
               </Button>
             </Link>
-            <Link href="/admin/appointments">
+            {/* <Link href="/admin/appointments">
               <Button
                 className={`
                 font-semibold rounded-sm text-[14px] h-7 w-22
@@ -116,7 +116,7 @@ const AdminHeader = () => {
                 size="sm">
                 Appointments
               </Button>
-            </Link>
+            </Link> */}
             <Link href="/admin/clients">
               <Button
                 className={`
