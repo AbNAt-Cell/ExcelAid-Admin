@@ -22,11 +22,11 @@ const phoneSchema = z
   .refine((val) => /^(\+234|0)\d{10}$/.test(val.replace(/\s+/g, "")) || /^(\+?\d{6,14})$/.test(val.replace(/\s+/g, "")), "Invalid phone number format");
 
 const countryOptions = countries
-  .map((country) => ({
+  .map((country: any) => ({
     label: country.name.common,
     value: country.cca2, // ISO 2-letter code
   }))
-  .sort((a, b) => a.label.localeCompare(b.label));
+  .sort((a: any, b: any) => a.label.localeCompare(b.label));
 
 const registerFormSchema = z
   .object({

@@ -21,11 +21,11 @@ interface Diagnosis {
   marketer: any;
   doctor: any;
   id: string;
-  appointmentDate: any;
+  preferredDate: any;
   name: string;
   status: ClientStatus;
   sex?: "male" | "female";
-  appointmentTime?: string;
+  preferredTime?: string;
   address?: string;
   signature?: string;
   assessment?: string;
@@ -42,7 +42,7 @@ export default function ClientDiagnosis() {
 
   const filteredDiagnoses = diagnoses.filter((diagnosis) => {
     const matchesSearch = diagnosis?.name?.toLowerCase().includes(searchTerm.toLowerCase()) || diagnosis?.status?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDateRange = (!startDate || diagnosis?.date >= startDate) && (!endDate || diagnosis?.date <= endDate);
+    const matchesDateRange = (!startDate || diagnosis?.preferredDate >= startDate) && (!endDate || diagnosis?.preferredDate <= endDate);
     return matchesSearch && matchesDateRange;
   });
 
@@ -126,7 +126,7 @@ export default function ClientDiagnosis() {
                 ) : (
                   filteredDiagnoses.map((diagnosis) => (
                     <TableRow key={diagnosis?.id} className="cursor-pointer hover:bg-accent" onClick={() => handleRowClick(diagnosis)}>
-                      <TableCell>{new Date(diagnosis?.appointmentDate).toLocaleDateString()}</TableCell>
+                      <TableCell>{new Date(diagnosis?.preferredDate).toLocaleDateString()}</TableCell>
                       <TableCell>{diagnosis?.clientName}</TableCell>
                       {/* <TableCell>
                         <span className={`px-2 py-1 rounded-full text-xs font-semibold ${diagnosis?.status === "Submitted" ? "bg-green-100 text-green-800" : diagnosis?.status === "Pending" ? "bg-yellow-100 text-yellow-800" : "bg-blue-100 text-blue-800"}`}>
@@ -158,10 +158,10 @@ export default function ClientDiagnosis() {
                   <b>Sex:</b> {selected.sex ?? "—"}
                 </p>
                 <p>
-                  <b>Date:</b> {selected.appointmentDate ? new Date(selected.appointmentDate).toLocaleDateString() : "—"}
+                  <b>Date:</b> {selected.preferredDate ? new Date(selected.preferredDate).toLocaleDateString() : "—"}
                 </p>
                 <p>
-                  <b>Time:</b> {selected.appointmentTime ?? "—"}
+                  <b>Time:</b> {selected.preferredTime ?? "—"}
                 </p>
                 <p>
                   <b>Address:</b> {selected.address ?? "—"}
