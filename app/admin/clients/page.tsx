@@ -14,14 +14,14 @@ import { Button } from "@/components/ui/button";
 import SignatureCanvas from "react-signature-canvas";
 import { getClients } from "@/hooks/admin/client";
 
-type ClientStatus = "Submitted" | "Pending" | "Review";
+type ClientStatus = "pending" | "completed" | "review";
 
 interface Diagnosis {
-  clientName: string;
+  client: any;
   marketer: any;
   doctor: any;
   id: string;
-  preferredDate: any;
+  date: any;
   name: string;
   status: ClientStatus;
   sex?: "male" | "female";
@@ -42,14 +42,14 @@ export default function ClientDiagnosis() {
 
   const filteredDiagnoses = diagnoses.filter((diagnosis) => {
     const matchesSearch = diagnosis?.name?.toLowerCase().includes(searchTerm.toLowerCase()) || diagnosis?.status?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDateRange = (!startDate || diagnosis?.preferredDate >= startDate) && (!endDate || diagnosis?.preferredDate <= endDate);
+    const matchesDateRange = (!startDate || diagnosis?.date >= startDate) && (!endDate || diagnosis?.date <= endDate);
     return matchesSearch && matchesDateRange;
   });
 
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Diagnosis | null>(null);
   const [assessment, setAssessment] = useState("");
-  const [statusSel, setStatusSel] = useState<ClientStatus>("Pending");
+  const [statusSel, setStatusSel] = useState<ClientStatus>("pending");
   const sigRef = useRef<SignatureCanvas | null>(null);
 
   const handleRowClick = (d: Diagnosis) => {
@@ -73,7 +73,7 @@ export default function ClientDiagnosis() {
     setOpen(false);
   };
 
-  const canEdit = selected && (selected.status === "Pending" || selected.status === "Review");
+  const canEdit = selected && (selected.status === "pending" || selected.status === "review");
 
   useEffect(() => {
     const getDiagnoses = async () => {
@@ -113,28 +113,32 @@ export default function ClientDiagnosis() {
                 <TableRow>
                   <TableHead>Date</TableHead>
                   <TableHead>Client Name</TableHead>
-                  {/* <TableHead>Status</TableHead> */}
+                  <TableHead>Created by</TableHead>
+                  <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredDiagnoses.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={2} className="text-center py-6">
+                    <TableCell colSpan={4} className="text-center py-6">
                       No Client found
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredDiagnoses.map((diagnosis) => (
-                    <TableRow key={diagnosis?.id} className="cursor-pointer hover:bg-accent" onClick={() => handleRowClick(diagnosis)}>
-                      <TableCell>{new Date(diagnosis?.preferredDate).toLocaleDateString()}</TableCell>
-                      <TableCell>{diagnosis?.clientName}</TableCell>
-                      {/* <TableCell>
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${diagnosis?.status === "Submitted" ? "bg-green-100 text-green-800" : diagnosis?.status === "Pending" ? "bg-yellow-100 text-yellow-800" : "bg-blue-100 text-blue-800"}`}>
-                          {diagnosis?.status}
-                        </span>
-                      </TableCell> */}
-                    </TableRow>
-                  ))
+                  filteredDiagnoses.map(
+                    (diagnosis) =>
+                      diagnosis?.client?.name &&
+                      diagnosis?.date && (
+                        <TableRow key={diagnosis?.id} className="cursor-pointer hover:bg-accent" onClick={() => handleRowClick(diagnosis)}>
+                          <TableCell>{diagnosis?.date}</TableCell>
+                          <TableCell>{diagnosis?.client?.name}</TableCell>
+                          <TableCell>{diagnosis?.doctor?.name || diagnosis?.marketer?.name || "-"}</TableCell>
+                          <TableCell>
+                            <span className={`px-2 py-1 rounded-full text-xs font-semibold ${diagnosis?.status === "completed" ? "bg-green-100 text-green-800" : diagnosis?.status === "pending" ? "bg-yellow-100 text-yellow-800" : "bg-blue-100 text-blue-800"}`}>{diagnosis?.status}</span>
+                          </TableCell>
+                        </TableRow>
+                      )
+                  )
                 )}
               </TableBody>
             </Table>
@@ -152,13 +156,13 @@ export default function ClientDiagnosis() {
 
               <div className="space-y-3">
                 <p>
-                  <b>Client:</b> {selected.name}
+                  <b>Client:</b> {selected.client?.name}
                 </p>
                 <p>
                   <b>Sex:</b> {selected.sex ?? "—"}
                 </p>
                 <p>
-                  <b>Date:</b> {selected.preferredDate ? new Date(selected.preferredDate).toLocaleDateString() : "—"}
+                  <b>Date:</b> {selected.date ? new Date(selected.date).toLocaleDateString() : "—"}
                 </p>
                 <p>
                   <b>Time:</b> {selected.preferredTime ?? "—"}
@@ -166,7 +170,7 @@ export default function ClientDiagnosis() {
                 <p>
                   <b>Address:</b> {selected.address ?? "—"}
                 </p>
-                {selected.status === "Submitted" && (
+                {selected.status === "completed" && (
                   <>
                     <p>
                       <b>Assessment Summary:</b> {selected.assessment ?? "—"}
@@ -174,12 +178,16 @@ export default function ClientDiagnosis() {
                     <p>
                       <b>Status:</b> {selected.status}
                     </p>
-                    <p>
-                      <b>Doctor Name:</b> {selected.doctor?.email ?? "—"}
-                    </p>
-                    <p>
-                      <b>Marketer Name:</b> {selected.marketer?.name ?? "—"}
-                    </p>
+                    {selected.doctor?.name && (
+                      <p>
+                        <b>Doctor Name:</b> {selected.doctor?.email ?? "—"}
+                      </p>
+                    )}
+                    {selected.marketer?.name && (
+                      <p>
+                        <b>Marketer Name:</b> {selected.marketer?.name ?? "—"}
+                      </p>
+                    )}
                   </>
                 )}
                 {selected.signature ? (
