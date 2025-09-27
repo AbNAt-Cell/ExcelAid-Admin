@@ -24,11 +24,16 @@ export default function Users() {
   const [users, setUsers] = useState<User[]>([]);
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<User | null>(null);
+  const [schedule, setSchedule] = useState<boolean>(false);
+  const [interviewDateTime, setInterviewDateTime] = useState("");
+  const [interviewLocation, setInterviewLocation] = useState("");
 
   const filteredUsers = users.filter((user) => user.name?.toLowerCase().includes(searchTerm.toLowerCase()));
 
   const handleRowClick = (user: User) => {
     setSelected(user);
+    setSchedule(false); // reset schedule state when opening
+    setInterviewDateTime(""); // reset input
     setOpen(true);
   };
 
@@ -40,22 +45,37 @@ export default function Users() {
 
   const handleDeny = () => {
     if (!selected) return;
-    console.log("denied user:", selected.id);
+    console.log("Denied user:", selected.id);
     setOpen(false);
   };
 
   const handleSuspend = () => {
     if (!selected) return;
-    console.log("suspended user:", selected.id);
+    console.log("Suspended user:", selected.id);
     setOpen(false);
+  };
+
+  const toggleSchedule = () => {
+    if (!selected) return;
+    console.log("Selected user:", selected);
+    setOpen(true);
+    setSchedule(true);
+  };
+
+  const handleSchedule = (datetime: string, location: string) => {
+    if (!selected) return;
+    console.log("Scheduled interview with:", selected.id, "on", datetime);
+    // API call here
+    setOpen(false);
+    setSchedule(false);
+    setInterviewDateTime("");
   };
 
   useEffect(() => {
     const fetchUsers = async () => {
       const response = await getUsers(); // replace with actual getUsers API
       if (response) {
-        // Transform client data → user data if needed
-        const mapped = response.map((c: any, idx: number) => ({
+        const mapped = response.map((c: any) => ({
           id: c.id,
           name: c.name || c.clientName || `${c.firstname} ${c.lastname}`,
           email: c.email,
@@ -129,7 +149,7 @@ export default function Users() {
       {/* Modal */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-md">
-          {selected && (
+          {selected && !schedule && (
             <>
               <DialogHeader>
                 <DialogTitle>User Information</DialogTitle>
@@ -152,14 +172,24 @@ export default function Users() {
               {/* Actions */}
               <div className="mt-6 flex justify-end gap-2">
                 {selected.status === "pending" && (
-                  <>
-                    <Button onClick={handleApprove} className="bg-green-600 text-white">
-                      Approve
+                  <div className="flex items-center justify-between w-full gap-2">
+                    <Button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        toggleSchedule();
+                      }}
+                      className="bg-black/70 text-white">
+                      Schedule Interview
                     </Button>
-                    <Button onClick={handleDeny} variant="destructive">
-                      Deny
-                    </Button>
-                  </>
+                    <div className="flex items-center gap-2">
+                      <Button onClick={handleApprove} className="bg-green-600 text-white">
+                        Approve
+                      </Button>
+                      <Button onClick={handleDeny} variant="destructive">
+                        Deny
+                      </Button>
+                    </div>
+                  </div>
                 )}
 
                 {selected.status === "approved" && (
@@ -167,6 +197,37 @@ export default function Users() {
                     Suspend
                   </Button>
                 )}
+              </div>
+            </>
+          )}
+          {selected && schedule && (
+            <>
+              <DialogHeader>
+                <DialogTitle>Schedule an interview with {selected.name}</DialogTitle>
+              </DialogHeader>
+
+              <div className="space-y-3">
+                {/* Interview scheduling fields */}
+                <div className="grid gap-3 mt-4">
+                  {/* Date & Time */}
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Interview Date & Time</label>
+                    <input type="datetime-local" value={interviewDateTime} onChange={(e) => setInterviewDateTime(e.target.value)} className="w-full border rounded-md px-3 py-2 text-sm" />
+                  </div>
+
+                  {/* Location */}
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Interview Location</label>
+                    <input type="text" placeholder="Enter location (e.g. Zoom link, office address...)" value={interviewLocation} onChange={(e) => setInterviewLocation(e.target.value)} className="w-full border rounded-md px-3 py-2 text-sm" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="mt-6 flex justify-end gap-2">
+                <Button onClick={() => handleSchedule(interviewDateTime, interviewLocation)} className="bg-black/70 text-white" disabled={!interviewDateTime || !interviewLocation}>
+                  Schedule Interview
+                </Button>
               </div>
             </>
           )}
