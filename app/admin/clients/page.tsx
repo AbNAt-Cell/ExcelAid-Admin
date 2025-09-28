@@ -132,7 +132,11 @@ export default function ClientDiagnosis() {
                         <TableRow key={diagnosis?.id} className="cursor-pointer hover:bg-accent" onClick={() => handleRowClick(diagnosis)}>
                           <TableCell>{diagnosis?.date}</TableCell>
                           <TableCell>{diagnosis?.client?.name}</TableCell>
-                          <TableCell>{diagnosis?.doctor?.name || diagnosis?.marketer?.name || "-"}</TableCell>
+                          <TableCell>
+                            <span className="flex items-center gap-2">
+                              {diagnosis?.doctor?.firstname || diagnosis?.marketer?.firstname || "-"} {diagnosis?.doctor?.firstname || diagnosis?.marketer?.firstname || "-"} {diagnosis?.doctor ? <p className={`text-xs text-black truncate capitalize bg-blue-300 rounded p-1`}>doctor</p> : diagnosis?.marketer ? <p className={`text-xs text-black truncate capitalize bg-green-300 rounded p-1`}>marketer</p> : "-"}
+                            </span>
+                          </TableCell>
                           <TableCell>
                             <span className={`px-2 py-1 rounded-full text-xs font-semibold ${diagnosis?.status === "completed" ? "bg-green-100 text-green-800" : diagnosis?.status === "pending" ? "bg-yellow-100 text-yellow-800" : "bg-blue-100 text-blue-800"}`}>{diagnosis?.status}</span>
                           </TableCell>
@@ -157,6 +161,12 @@ export default function ClientDiagnosis() {
               <div className="space-y-3">
                 <p>
                   <b>Client:</b> {selected.client?.name}
+                </p>
+                <p>
+                  <b>Created By:</b>{" "}
+                  <span className="flex items-center gap-2">
+                    {selected?.doctor?.firstname || selected?.marketer?.firstname || "-"} {selected?.doctor?.firstname || selected?.marketer?.firstname || "-"} {selected?.doctor ? <p className={`text-xs text-black truncate capitalize bg-blue-300 rounded p-1`}>doctor</p> : selected?.marketer ? <p className={`text-xs text-black truncate capitalize bg-green-300 rounded p-1`}>marketer</p> : "-"}
+                  </span>
                 </p>
                 <p>
                   <b>Sex:</b> {selected.sex ?? "—"}

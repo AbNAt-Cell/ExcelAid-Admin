@@ -33,7 +33,7 @@ const registerFormSchema = z
     firstName: z.string().min(1, "First name is required"),
     lastName: z.string().min(1, "Last name is required"),
     clientName: z.string().min(1, "Client name is required"),
-    phoneNumber: phoneSchema,
+    phone: phoneSchema,
     email: z.string().email("Invalid email address"),
     password: z.string().min(8, "Password must be at least 8 characters long"),
     confirmPassword: z.string().min(1, "Please confirm your password"),
@@ -65,7 +65,7 @@ export default function ClinicRegister() {
       firstName: "",
       lastName: "",
       clientName: "",
-      phoneNumber: "",
+      phone: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -164,7 +164,7 @@ export default function ClinicRegister() {
 
                     <FormField
                       control={form.control}
-                      name="phoneNumber"
+                      name="phone"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="text-gray-700 font-medium">Phone Number</FormLabel>
