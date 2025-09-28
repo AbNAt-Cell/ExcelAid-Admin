@@ -79,6 +79,7 @@ export default function Users() {
           id: c.id,
           name: c.name || c.clientName || `${c.firstname} ${c.lastname}`,
           email: c.email,
+          role: c.role,
           createdAt: c.createdAt,
           status: (c.status as UserStatus) || "pending",
         }));
@@ -125,10 +126,14 @@ export default function Users() {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  filteredUsers.map((user, index) => (
+                  filteredUsers.map((user: any, index) => (
                     <TableRow key={user.id} className="cursor-pointer hover:bg-accent" onClick={() => handleRowClick(user)}>
                       <TableCell>{index + 1}</TableCell>
-                      <TableCell>{user.name}</TableCell>
+                      <TableCell>
+                        <span className="flex items-center gap-2">
+                          {user?.name || "-"} <p className={`text-xs text-black truncate capitalize ${user?.role === "doctor" ? "bg-blue-300" : user?.role === "admin" ? "bg-red-300" : user?.role === "marketer" ? "bg-green-300" : ""} rounded p-1`}>{user?.role}</p>
+                        </span>
+                      </TableCell>
                       <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
                       <TableCell>
                         <span
