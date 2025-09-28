@@ -134,7 +134,7 @@ export default function ClientDiagnosis() {
                           <TableCell>{diagnosis?.client?.name}</TableCell>
                           <TableCell>
                             <span className="flex items-center gap-2">
-                              {diagnosis?.doctor?.firstname || diagnosis?.marketer?.firstname || "-"} {diagnosis?.doctor?.firstname || diagnosis?.marketer?.firstname || "-"} {diagnosis?.doctor ? <p className={`text-xs text-black truncate capitalize bg-blue-300 rounded p-1`}>doctor</p> : diagnosis?.marketer ? <p className={`text-xs text-black truncate capitalize bg-green-300 rounded p-1`}>marketer</p> : "-"}
+                              {diagnosis?.doctor?.firstname || diagnosis?.marketer?.firstname || "-"} {diagnosis?.doctor?.lastname || diagnosis?.marketer?.lastname || "-"} {diagnosis?.doctor ? <p className={`text-xs text-black truncate capitalize bg-blue-300 rounded p-1`}>doctor</p> : diagnosis?.marketer ? <p className={`text-xs text-black truncate capitalize bg-green-300 rounded p-1`}>marketer</p> : "-"}
                             </span>
                           </TableCell>
                           <TableCell>
