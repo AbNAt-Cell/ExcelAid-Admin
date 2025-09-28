@@ -131,7 +131,8 @@ export default function Users() {
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>
                         <span className="flex items-center gap-2">
-                          {user?.name || "-"} <p className={`text-xs text-black truncate capitalize ${user?.role === "doctor" ? "bg-blue-300" : user?.role === "admin" ? "bg-red-300" : user?.role === "marketer" ? "bg-green-300" : ""} rounded p-1`}>{user?.role}</p>
+                          {user?.name || "-"}
+                          <p className={`text-xs text-black truncate capitalize ${user?.role === "doctor" ? "bg-blue-300" : user?.role === "admin" ? "bg-red-300" : user?.role === "marketer" ? "bg-green-300" : ""} rounded p-1`}>{user?.role}</p>
                         </span>
                       </TableCell>
                       <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
