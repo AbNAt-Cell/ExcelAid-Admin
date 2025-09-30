@@ -8,12 +8,14 @@ import { Search } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { getUsers } from "@/hooks/admin/users";
+import { updateUserStatus } from "@/hooks/approval";
 
 type UserStatus = "approved" | "pending" | "suspended" | "denied";
 
 interface User {
   id: string;
   name: string;
+  role: string;
   email?: string;
   createdAt: string;
   status: UserStatus;
@@ -37,22 +39,44 @@ export default function Users() {
     setOpen(true);
   };
 
-  const handleApprove = () => {
+  const handleApprove = async () => {
     if (!selected) return;
-    console.log("Approved user:", selected.id);
-    setOpen(false);
+    try {
+      await updateUserStatus(selected.id, "approved");
+
+      // update local state
+      setUsers((prev) => prev.map((user) => (user.id === selected.id ? { ...user, status: "approved" } : user)));
+
+      setOpen(false);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const handleDeny = () => {
+  const handleDeny = async () => {
     if (!selected) return;
-    console.log("Denied user:", selected.id);
-    setOpen(false);
+    try {
+      await updateUserStatus(selected.id, "denied");
+
+      setUsers((prev) => prev.map((user) => (user.id === selected.id ? { ...user, status: "denied" } : user)));
+
+      setOpen(false);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const handleSuspend = () => {
+  const handleSuspend = async () => {
     if (!selected) return;
-    console.log("Suspended user:", selected.id);
-    setOpen(false);
+    try {
+      await updateUserStatus(selected.id, "suspended");
+
+      setUsers((prev) => prev.map((user) => (user.id === selected.id ? { ...user, status: "suspended" } : user)));
+
+      setOpen(false);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const toggleSchedule = () => {
@@ -76,7 +100,7 @@ export default function Users() {
       const response = await getUsers(); // replace with actual getUsers API
       if (response) {
         const mapped = response.map((c: any) => ({
-          id: c.id,
+          id: c._id,
           name: c.name || c.clientName || `${c.firstname} ${c.lastname}`,
           email: c.email,
           role: c.role,
@@ -176,34 +200,36 @@ export default function Users() {
               </div>
 
               {/* Actions */}
-              <div className="mt-6 flex justify-end gap-2">
-                {selected.status === "pending" && (
-                  <div className="flex items-center justify-between w-full gap-2">
-                    <Button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        toggleSchedule();
-                      }}
-                      className="bg-black/70 text-white">
-                      Schedule Interview
-                    </Button>
-                    <div className="flex items-center gap-2">
-                      <Button onClick={handleApprove} className="bg-green-600 text-white">
-                        Approve
+              {selected?.role !== "admin" && (
+                <div className="mt-6 flex justify-end gap-2">
+                  {selected.status === "pending" && (
+                    <div className="flex items-center justify-between w-full gap-2">
+                      <Button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          toggleSchedule();
+                        }}
+                        className="bg-black/70 text-white">
+                        Schedule Interview
                       </Button>
-                      <Button onClick={handleDeny} variant="destructive">
-                        Deny
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Button onClick={handleApprove} className="bg-green-600 text-white">
+                          Approve
+                        </Button>
+                        <Button onClick={handleDeny} variant="destructive">
+                          Deny
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {selected.status === "approved" && (
-                  <Button onClick={handleSuspend} variant="destructive">
-                    Suspend
-                  </Button>
-                )}
-              </div>
+                  {selected.status === "approved" && (
+                    <Button onClick={handleSuspend} variant="destructive">
+                      Suspend
+                    </Button>
+                  )}
+                </div>
+              )}
             </>
           )}
           {selected && schedule && (
