@@ -42,7 +42,7 @@ const AdminHeader = () => {
               <Image src="/images/logo.svg" alt="excel connect logo" width={250} height={32} priority />
             </div>
             <div className="flex items-center gap-2">
-              <DropdownMenu>
+              {/* <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button className="text-black hover:text-secondary" asChild variant="ghost" size="icon">
                     <Bell className="h-6 w-6 cursor-pointer" />
@@ -53,7 +53,7 @@ const AdminHeader = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>No new notifications</DropdownMenuItem>
                 </DropdownMenuContent>
-              </DropdownMenu>
+              </DropdownMenu> */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button asChild variant="ghost" size="icon">
