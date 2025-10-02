@@ -124,6 +124,36 @@ export default function DoctorProfile() {
     }
   };
 
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("userId", profile.id); // pass user id to API
+
+      const res = await fetch("/api/upload/avatar", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (data.success && data.fileUrl) {
+        // Update local profile state with new avatar
+        setEditableProfile({
+          ...editableProfile,
+          avatarUrl: data.fileUrl,
+        });
+      } else {
+        console.error("Upload failed:", data.error);
+      }
+    } catch (err) {
+      console.error("Upload error:", err);
+    }
+  };
+
   return (
     <div className="container max-w-[1350px] mx-auto p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6">
       <div className="flex justify-end">
@@ -156,14 +186,19 @@ export default function DoctorProfile() {
           </CardHeader>
           <CardContent className="space-y-3 sm:space-y-4">
             <div className="flex sm:flex-row sm:items-start space-y-3 sm:space-y-0 sm:space-x-4">
-              <AvatarUpload
-                onImageChange={(file, imageUrl) => {
-                  console.log("Avatar changed:", file, imageUrl);
-                  if (isEditing) {
-                    setEditableProfile({ ...editableProfile, avatar: imageUrl });
-                  }
-                }}
-              />
+              {isEditing ? (
+                <AvatarUpload
+                  onImageChange={(file) => {
+                    const fakeEvent = {
+                      target: { files: [file] },
+                    } as unknown as React.ChangeEvent<HTMLInputElement>;
+                    handleAvatarChange(fakeEvent);
+                  }}
+                />
+              ) : (
+                <img src={profile?.avatarUrl || "/images/Blank_Profile.jpg"} alt="User Avatar" className="w-24 h-24 rounded-full object-cover bg-green-400" />
+              )}
+
               <div className="flex flex-col text-center sm:text-left">
                 {isEditing ? (
                   <>
@@ -239,9 +274,9 @@ export default function DoctorProfile() {
                       {profile?.firstname} {profile?.lastname}
                     </h3>
                     <p className="text-xs sm:text-sm text-muted-foreground">
-                      {profile?.address?.street}, {profile?.address?.streetLine2} <br />
-                      {profile?.address?.city}, {profile?.address?.region} {profile?.address?.postalCode} <br />
-                      {profile?.address?.country}
+                      {profile?.address?.street || "Nil"}, {profile?.address?.streetLine2 || "Nil"} <br />
+                      {profile?.address?.city || "Nil"}, {profile?.address?.region || "Nil"} {profile?.address?.postalCode || "Nil"} <br />
+                      {profile?.address?.country || "Nil"}
                     </p>
                   </>
                 )}
@@ -364,30 +399,6 @@ export default function DoctorProfile() {
               <div className="space-y-3 sm:space-y-4">
                 <p className="font-medium text-sm sm:text-base">Doctor Signature</p>
                 <div className="flex items-center justify-center border rounded-lg p-3 sm:p-4 h-20 sm:h-24 bg-gray-50">{clientSignature ? <Image src={profile?.signatureUrl} alt="Client Signature" height={100} width={100} className="h-full w-auto" /> : <p className="text-muted-foreground text-xs sm:text-sm"></p>}</div>
-                <Dialog open={openClientSignature} onOpenChange={setOpenClientSignature}>
-                  <DialogTrigger asChild>
-                    <Button variant="secondary" className="w-full text-sm sm:text-base cursor-pointer">
-                      Update Signature
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="w-[90vw] max-w-md sm:max-w-lg">
-                    <DialogHeader>
-                      <DialogTitle>Update Signature</DialogTitle>
-                      <UpdateClientSignatureForm onSignatureUpdate={setClientSignature} setOpen={setOpenClientSignature} />
-                    </DialogHeader>
-                  </DialogContent>
-                </Dialog>
-                {/* <Button variant="outline" className="w-full text-sm sm:text-base cursor-pointer" onClick={() => setOpenClientPin(true)}>
-                  Change PIN?
-                </Button> */}
-                {/* <Dialog open={openClientPin} onOpenChange={setOpenClientPin}>
-                  <DialogContent className="w-[90vw] max-w-md sm:max-w-lg">
-                    <DialogHeader>
-                      <DialogTitle>Change Client PIN</DialogTitle>
-                    </DialogHeader>
-                    <ChangePinForm setOpen={setOpenClientPin} onPinChange={handleClientPinChange} />
-                  </DialogContent>
-                </Dialog> */}
               </div>
 
               <div className="space-y-3 sm:space-y-4 mt-1">
