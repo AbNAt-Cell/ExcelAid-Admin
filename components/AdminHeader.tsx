@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Search, AlarmClock, Mail, Bell, PlusCircle, UserCircle, ChevronDown, LogOut, AtSign, User, UserCog } from "lucide-react";
 import { Input } from "./ui/input";
@@ -8,14 +8,30 @@ import { useRouter } from "nextjs-toploader/app";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { getStoredUser, logout } from "@/hooks/auth";
+import Cookies from "js-cookie";
 
 const LogoutMenuItem = () => {
   const router = useRouter();
+  const [loggedInUser, setLoggedInUser] = useState<any>(null);
 
   const handleLogout = () => {
     logout();
     router.push("/admin/login");
   };
+
+  useEffect(() => {
+    if (!loggedInUser) {
+      const user = Cookies.get("user");
+      if (user) {
+        try {
+          const parsedUser = JSON.parse(user);
+          setLoggedInUser(parsedUser);
+        } catch (err) {
+          console.error("Failed to parse user cookie", err);
+        }
+      }
+    }
+  }, [loggedInUser]);
 
   return (
     <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600 cursor-pointer">
