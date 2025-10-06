@@ -111,7 +111,7 @@ const AdminHeader = () => {
       <div className="mx-auto max-w-[1350px]">
         <div className="flex items-center justify-between px-6 py-3">
           <div className="flex flex-wrap flex-row items-center gap-4">
-            <Link href="/admin/dashboard">
+            {/* <Link href="/admin/dashboard">
               <Button
                 className={`
                 font-semibold rounded-sm text-[14px] h-7 w-22
@@ -121,7 +121,7 @@ const AdminHeader = () => {
                 size="sm">
                 Dashboard
               </Button>
-            </Link>
+            </Link> */}
             {/* <Link href="/admin/appointments">
               <Button
                 className={`

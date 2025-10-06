@@ -86,13 +86,55 @@ export default function Users() {
     setSchedule(true);
   };
 
-  const handleSchedule = (datetime: string, location: string) => {
+  const handleSchedule = async (datetime: string, location: string) => {
     if (!selected) return;
-    console.log("Scheduled interview with:", selected.id, "on", datetime);
-    // API call here
-    setOpen(false);
-    setSchedule(false);
-    setInterviewDateTime("");
+
+    try {
+      console.log("Scheduling interview for:", selected.id, "on", datetime, "at", location);
+
+      // Convert datetime into readable date/time
+      const dateObj = new Date(datetime);
+      const interviewDate = dateObj.toLocaleDateString("en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+      const interviewTime = dateObj.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      // Call the email API
+      const res = await fetch("/api/interview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          recipientEmail: selected?.email, // assuming your selected user has an email
+          interviewDate,
+          interviewTime,
+          location,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error("Email send failed:", data);
+        alert("Failed to send interview mail");
+      } else {
+        console.log("Email sent:", data);
+        alert("Interview email sent successfully!");
+      }
+
+      // Reset UI
+      setOpen(false);
+      setSchedule(false);
+      setInterviewDateTime("");
+    } catch (err) {
+      console.error("Error scheduling interview:", err);
+      alert("Something went wrong while scheduling the interview");
+    }
   };
 
   useEffect(() => {
@@ -204,15 +246,17 @@ export default function Users() {
                 <div className="mt-6 flex justify-end gap-2">
                   {selected.status === "pending" && (
                     <div className="flex items-center justify-between w-full gap-2">
-                      <Button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          toggleSchedule();
-                        }}
-                        className="bg-black/70 text-white">
-                        Schedule Interview
-                      </Button>
-                      <div className="flex items-center gap-2">
+                      {selected?.role !== "marketer" && (
+                        <Button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            toggleSchedule();
+                          }}
+                          className="bg-black/70 text-white">
+                          Schedule Interview
+                        </Button>
+                      )}
+                      <div className="flex items-center gap-2 ms-auto">
                         <Button onClick={handleApprove} className="bg-green-600 text-white">
                           Approve
                         </Button>

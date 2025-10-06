@@ -40,7 +40,7 @@ export default function AdminLogin() {
       const { user } = await login(data);
 
       if (user.role === "admin") {
-        router.push("/admin/dashboard");
+        router.push("/admin/clients");
       } else {
         setError("Access denied. Admin privileges required.");
         logout();
