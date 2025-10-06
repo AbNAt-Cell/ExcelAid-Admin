@@ -14,9 +14,10 @@ import { Button } from "@/components/ui/button";
 import SignatureCanvas from "react-signature-canvas";
 import { getClients } from "@/hooks/admin/client";
 
-type ClientStatus = "pending" | "completed" | "review";
+type ClientStatus = "pending" | "submitted" | "review";
 
 interface Diagnosis {
+  description: string;
   client: any;
   marketer: any;
   doctor: any;
@@ -138,7 +139,7 @@ export default function ClientDiagnosis() {
                             </span>
                           </TableCell>
                           <TableCell>
-                            <span className={`px-2 py-1 rounded-full text-xs font-semibold ${diagnosis?.status === "completed" ? "bg-green-100 text-green-800" : diagnosis?.status === "pending" ? "bg-yellow-100 text-yellow-800" : "bg-blue-100 text-blue-800"}`}>{diagnosis?.status}</span>
+                            <span className={`px-2 py-1 rounded-full text-xs font-semibold ${diagnosis?.status === "submitted" ? "bg-green-100 text-green-800" : diagnosis?.status === "pending" ? "bg-yellow-100 text-yellow-800" : "bg-blue-100 text-blue-800"}`}>{diagnosis?.status}</span>
                           </TableCell>
                         </TableRow>
                       )
@@ -169,7 +170,7 @@ export default function ClientDiagnosis() {
                   </span>
                 </p>
                 <p>
-                  <b>Sex:</b> {selected.sex ?? "—"}
+                  <b>Sex:</b> {selected?.client?.sex ?? "—"}
                 </p>
                 <p>
                   <b>Date:</b> {selected.date ? new Date(selected.date).toLocaleDateString() : "—"}
@@ -180,13 +181,13 @@ export default function ClientDiagnosis() {
                 <p>
                   <b>Address:</b> {selected.address ?? "—"}
                 </p>
-                {selected.status === "completed" && (
+                <p>
+                  <b>Status:</b> {statusSel}
+                </p>
+                {selected.status === "submitted" && (
                   <>
                     <p>
-                      <b>Assessment Summary:</b> {selected.assessment ?? "—"}
-                    </p>
-                    <p>
-                      <b>Status:</b> {selected.status}
+                      <b>Assessment Summary:</b> {selected.description ?? "—"}
                     </p>
                     {selected.doctor?.name && (
                       <p>
@@ -209,49 +210,6 @@ export default function ClientDiagnosis() {
                   <p className="text-sm text-muted-foreground">
                     <b>Client Signature:</b> None
                   </p>
-                )}
-
-                {canEdit && (
-                  <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                      <div className="md:col-span-2">
-                        <Label className="mb-1 block">Assessment Summary</Label>
-                        <Textarea value={assessment} onChange={(e) => setAssessment(e.target.value)} placeholder="Write your assessment..." className="min-h-20" />
-                      </div>
-
-                      <div>
-                        <Label className="mb-1 block">Status</Label>
-                        <Select value={statusSel} onValueChange={(v) => setStatusSel(v as ClientStatus)}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select status" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-white shadow-md border rounded-md">
-                            <SelectItem value="Pending">Pending</SelectItem>
-                            <SelectItem value="Submitted">Submitted</SelectItem>
-                            <SelectItem value="Review">Review</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="md:col-span-2">
-                        <Label className="mb-1 block">Doctor Signature</Label>
-                        <div className="border rounded-md p-2 bg-white">
-                          <SignatureCanvas ref={sigRef} penColor="black" canvasProps={{ width: 500, height: 160, className: "border w-full h-[100px]" }} backgroundColor="white" />
-                        </div>
-                        <div className="flex justify-between mt-2">
-                          <Button type="button" variant="outline" size="sm" onClick={() => sigRef.current?.clear()}>
-                            Clear
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="pt-2">
-                      <Button onClick={handleConfirm} className="w-full">
-                        Confirm
-                      </Button>
-                    </div>
-                  </>
                 )}
               </div>
             </>
